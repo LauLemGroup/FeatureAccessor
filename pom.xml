@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.laulem</groupId>
+    <artifactId>feature-accessor-core</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+
+    <name>Feature Accessor Core</name>
+    <description>Core utilities for feature flag management</description>
+    <url>https://github.com/LauLemGroup/FeatureAccessor</url>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>LEMAIRE Alexandre</name>
+            <email>alexandre.lemaire@laulem.com</email>
+            <url>https://www.laulem.com/</url>
+            <organization>LauLemGroup</organization>
+            <organizationUrl>https://www.laulem.com/</organizationUrl>
+        </developer>
+    </developers>
+
+    <issueManagement>
+        <system>github</system>
+        <url>https://github.com/LauLemGroup/FeatureAccessor/issues</url>
+    </issueManagement>
+
+    <scm>
+        <connection>scm:git:git@github.com:LauLemGroup/FeatureAccessor.git</connection>
+        <developerConnection>scm:git:git@github.com:LauLemGroup/FeatureAccessor.git</developerConnection>
+        <url>git@github.com:LauLemGroup/FeatureAccessor.git</url>
+    </scm>
+
+    <properties>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <openfeature.version>1.16.0</openfeature.version>
+        <junit.version>5.13.4</junit.version>
+        <mockito.version>5.18.0</mockito.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>dev.openfeature</groupId>
+            <artifactId>sdk</artifactId>
+            <version>${openfeature.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>${mockito.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <version>${mockito.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+</project>
