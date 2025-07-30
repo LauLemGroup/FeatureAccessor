@@ -8,9 +8,10 @@ class FeatureFlagLoadExceptionTest {
     @Test
     void constructor_setsMessageAndCause() {
         Throwable cause = new RuntimeException("cause");
-        FeatureFlagLoadException ex = new FeatureFlagLoadException("error", cause);
+        ProviderException ex = new ProviderException("error", cause);
         assertEquals("error", ex.getMessage());
         assertEquals(cause, ex.getCause());
     }
 }
+
 

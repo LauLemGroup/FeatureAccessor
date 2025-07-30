@@ -1,5 +1,6 @@
 package com.laulem.featureaccessorcore.tool;
 
+import dev.openfeature.sdk.ErrorCode;
 import dev.openfeature.sdk.EvaluationContext;
 import dev.openfeature.sdk.ProviderEvaluation;
 import dev.openfeature.sdk.Value;
@@ -69,5 +70,37 @@ class EvaluationToolTest {
         assertFalse(evaluation.getValue());
         assertEquals(EvaluationTool.DEFAULT_REASON, evaluation.getReason());
         assertNotNull(evaluation.getErrorCode());
+    }
+
+    @Test
+    void evaluateFlag_returnsErrorReasonIfExtractorThrows() {
+        // GIVEN
+        Map<String, Value> flagMap = new HashMap<>();
+        flagMap.put("FLAG", new Value("not_a_boolean"));
+        EvaluationContext evaluationContext = Mockito.mock(EvaluationContext.class);
+        // WHEN
+        ProviderEvaluation<Boolean> evaluation = EvaluationTool.evaluateFlag(flagMap, "FLAG", false, evaluationContext, v -> {
+            throw new RuntimeException("parse error");
+        });
+        // THEN
+        assertEquals(EvaluationTool.ERROR_REASON, evaluation.getReason());
+        assertFalse(evaluation.getValue());
+        assertEquals(dev.openfeature.sdk.ErrorCode.PARSE_ERROR, evaluation.getErrorCode());
+    }
+
+    @Test
+    void evaluateFlagSupplier_returnsErrorReasonIfExtractorThrows() {
+        // GIVEN
+        Map<String, Supplier<Value>> flagSupplierMap = new HashMap<>();
+        flagSupplierMap.put("FLAG", () -> new Value("not_a_boolean"));
+        EvaluationContext evaluationContext = Mockito.mock(EvaluationContext.class);
+        // WHEN
+        ProviderEvaluation<Boolean> evaluation = EvaluationTool.evaluateFlagSupplier(flagSupplierMap, "FLAG", false, evaluationContext, v -> {
+            throw new RuntimeException("parse error");
+        });
+        // THEN
+        assertEquals(EvaluationTool.ERROR_REASON, evaluation.getReason());
+        assertFalse(evaluation.getValue());
+        assertEquals(ErrorCode.PARSE_ERROR, evaluation.getErrorCode());
     }
 }

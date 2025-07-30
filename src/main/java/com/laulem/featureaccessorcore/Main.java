@@ -23,7 +23,7 @@ public class Main {
         inMemoryFlagProvider.setFlag("v2_enabled_2", true);
 
         LambdaFlagProvider lambdaFlagProvider = new LambdaFlagProvider();
-        lambdaFlagProvider.setBooleanFlag("v2_enabled_3", () -> true);
+        lambdaFlagProvider.setFlag("v2_enabled_3", () -> true);
 
 
         MultiFeatureProvider provider = new MultiFeatureProvider();

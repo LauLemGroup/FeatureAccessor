@@ -1,5 +1,6 @@
 package com.laulem.featureaccessorcore.provider;
 
+import com.laulem.featureaccessorcore.exception.ProviderException;
 import com.laulem.featureaccessorcore.tool.EvaluationTool;
 import dev.openfeature.sdk.EvaluationContext;
 import dev.openfeature.sdk.FeatureProvider;
@@ -12,36 +13,70 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
+/**
+ * LambdaFlagProvider is a feature provider that allows setting feature flags using lambda expressions.
+ * Flags can be set dynamically at runtime using suppliers.
+ */
 public class LambdaFlagProvider implements FeatureProvider {
     private final Map<String, Supplier<Value>> flags = new ConcurrentHashMap<>();
 
     public LambdaFlagProvider() {
     }
 
+    /**
+     * Constructs a LambdaFlagProvider with a map of flag suppliers.
+     *
+     * @param flags the map of flag suppliers
+     */
     public LambdaFlagProvider(Map<String, Supplier<Value>> flags) {
-        Objects.requireNonNull(flags);
+        Objects.requireNonNull(flags, "Flags map cannot be null");
         this.flags.putAll(flags);
     }
 
+    /**
+     * Constructs a LambdaFlagProvider with a single flag supplier.
+     *
+     * @param name the flag name
+     * @param flag the flag supplier
+     */
     public LambdaFlagProvider(String name, Supplier<Value> flag) {
         setValueFlag(name, flag);
     }
 
+    /**
+     * Sets a value flag with a supplier.
+     *
+     * @param key  the flag key
+     * @param flag the flag supplier
+     */
     public void setValueFlag(String key, Supplier<Value> flag) {
-        Objects.requireNonNull(key);
-        Objects.requireNonNull(flag);
+        Objects.requireNonNull(key, "Key cannot be null");
+        Objects.requireNonNull(flag, "Flag supplier cannot be null");
         flags.put(key.toUpperCase(), flag);
     }
 
-    public void setBooleanFlag(String key, Supplier<Boolean> flag) {
-        Objects.requireNonNull(key);
-        Objects.requireNonNull(flag);
-        flags.put(key.toUpperCase(), () -> new Value(flag.get()));
+    /**
+     * Sets a boolean flag with a supplier.
+     *
+     * @param key  the flag key
+     * @param flag the boolean flag supplier
+     * @param <T>  the type of the flag value. Should be one of Boolean, String, Integer, Double, Number, List, Structure or Value.
+     */
+    public <T> void setFlag(String key, Supplier<T> flag) {
+        Objects.requireNonNull(key, "Key cannot be null");
+        Objects.requireNonNull(flag, "Flag supplier cannot be null");
+        flags.put(key.toUpperCase(), () -> {
+            try {
+                return new Value(flag.get());
+            } catch (InstantiationException e) {
+                throw new ProviderException("Error instantiating flag", e);
+            }
+        });
     }
 
     @Override
     public Metadata getMetadata() {
-        return () -> "PropertiesFileFeatureProvider";
+        return () -> "LambdaFlagProvider";
     }
 
     @Override

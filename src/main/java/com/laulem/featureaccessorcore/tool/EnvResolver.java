@@ -9,6 +9,13 @@ public class EnvResolver {
     private EnvResolver() {
     }
 
+    /**
+     * Resolves environment variables in the given input string.
+     * Variables should be in the format ${VAR_NAME[:default]}.
+     *
+     * @param input the input string possibly containing environment variables
+     * @return the input string with environment variables resolved
+     */
     public static String resolveEnvVars(String input) {
         if (input == null || !input.contains("${")) return input;
 

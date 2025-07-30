@@ -15,9 +15,9 @@ class DefaultPropertiesFileFlagProviderTest {
         DefaultPropertiesFileFlagProvider provider = new DefaultPropertiesFileFlagProvider("feature-accessor.properties");
         EvaluationContext evaluationContext = Mockito.mock(EvaluationContext.class);
         // WHEN
-        boolean newDashboardFlag = provider.getBooleanEvaluation("KNOWN_FLAG", false, evaluationContext).getValue();
+        boolean flagValue = provider.getBooleanEvaluation("KNOWN_FLAG", false, evaluationContext).getValue();
         // THEN
-        assertTrue(newDashboardFlag);
+        assertTrue(flagValue);
     }
 
     @Test
@@ -42,6 +42,18 @@ class DefaultPropertiesFileFlagProviderTest {
         // THEN
         assertTrue(newDashboardFlag);
         System.clearProperty("feature-accessor.properties-file");
+    }
+
+    @Test
+    void constructor_usesDefaultIfNoSystemProperty() {
+        // GIVEN
+        System.clearProperty("feature-accessor.properties-file");
+        // WHEN
+        DefaultPropertiesFileFlagProvider provider = new DefaultPropertiesFileFlagProvider();
+        EvaluationContext evaluationContext = Mockito.mock(EvaluationContext.class);
+        boolean flagValue = provider.getBooleanEvaluation("known_flag", false, evaluationContext).getValue();
+        // THEN
+        assertTrue(flagValue);
     }
 
     @Test

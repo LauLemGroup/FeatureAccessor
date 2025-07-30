@@ -18,6 +18,17 @@ public class EvaluationTool {
     private EvaluationTool() {
     }
 
+    /**
+     * Evaluates a flag from a map of flags using the provided extractor function.
+     *
+     * @param flags the map of flag keys to Value
+     * @param flagKey the key of the flag to evaluate
+     * @param defaultValue the default value to return if the flag is not found or an error occurs
+     * @param ctx the evaluation context (not used)
+     * @param extractor function to extract the real value from the Value object
+     * @return the ProviderEvaluation result
+     * @param <T> the type of the flag value expected
+     */
     public static <T> ProviderEvaluation<T> evaluateFlag(Map<String, Value> flags, String flagKey, T defaultValue, EvaluationContext ctx, Function<Value, T> extractor) {
         try {
             Value value = flags.get(flagKey.toUpperCase());
@@ -42,6 +53,17 @@ public class EvaluationTool {
         }
     }
 
+    /**
+     * Evaluates a flag from a map of flag suppliers using the provided extractor function.
+     *
+     * @param flags the map of flag keys to Supplier<Value>
+     * @param flagKey the key of the flag to evaluate
+     * @param defaultValue the default value to return if the flag is not found or an error occurs
+     * @param ctx the evaluation context (not used)
+     * @param extractor function to extract the value from the Supplier<Value>
+     * @return the ProviderEvaluation result
+     * @param <T> the type of the flag value expected
+     */
     public static <T> ProviderEvaluation<T> evaluateFlagSupplier(Map<String, Supplier<Value>> flags, String flagKey, T defaultValue, EvaluationContext ctx, Function<Supplier<Value>, T> extractor) {
         try {
             Supplier<Value> value = flags.get(flagKey.toUpperCase());

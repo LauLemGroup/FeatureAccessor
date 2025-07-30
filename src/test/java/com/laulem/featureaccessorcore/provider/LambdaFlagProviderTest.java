@@ -23,9 +23,9 @@ class LambdaFlagProviderTest {
     }
 
     @Test
-    void setBooleanFlag_and_getBooleanEvaluation() {
+    void setBooleanFlag_and_getEvaluation() {
         // GIVEN
-        provider.setBooleanFlag("dynamic_flag", () -> true);
+        provider.setFlag("dynamic_flag", () -> true);
         EvaluationContext evaluationContext = Mockito.mock(EvaluationContext.class);
         // WHEN
         boolean dynamicFlagValue = provider.getBooleanEvaluation("dynamic_flag", false, evaluationContext).getValue();
@@ -85,19 +85,19 @@ class LambdaFlagProviderTest {
     }
 
     @Test
-    void setBooleanFlag_nullKey_throwsException() {
+    void setFlag_nullKey_throwsException() {
         // GIVEN
         LambdaFlagProvider localProvider = new LambdaFlagProvider();
         // WHEN & THEN
-        assertThrows(NullPointerException.class, () -> localProvider.setBooleanFlag(null, () -> true));
+        assertThrows(NullPointerException.class, () -> localProvider.setFlag(null, () -> true));
     }
 
     @Test
-    void setBooleanFlag_nullFlag_throwsException() {
+    void setFlag_nullFlag_throwsException() {
         // GIVEN
         LambdaFlagProvider localProvider = new LambdaFlagProvider();
         // WHEN & THEN
-        assertThrows(NullPointerException.class, () -> localProvider.setBooleanFlag("FLAG", null));
+        assertThrows(NullPointerException.class, () -> localProvider.setFlag("FLAG", null));
     }
 
     @Test
@@ -152,6 +152,6 @@ class LambdaFlagProviderTest {
         // WHEN
         String name = localProvider.getMetadata().getName();
         // THEN
-        assertEquals("PropertiesFileFeatureProvider", name);
+        assertEquals("LambdaFlagProvider", name);
     }
 }

@@ -1,6 +1,6 @@
 package com.laulem.featureaccessorcore.provider;
 
-import com.laulem.featureaccessorcore.exception.FeatureFlagLoadException;
+import com.laulem.featureaccessorcore.exception.ProviderException;
 import dev.openfeature.sdk.EvaluationContext;
 import dev.openfeature.sdk.Value;
 import org.junit.jupiter.api.Test;
@@ -104,7 +104,18 @@ class PropertiesFileFlagProviderTest {
         // GIVEN
         String fileName = "not-exist.properties";
         // WHEN & THEN
-        FeatureFlagLoadException ex = assertThrows(FeatureFlagLoadException.class, () -> new PropertiesFileFlagProvider(fileName));
+        ProviderException ex = assertThrows(ProviderException.class, () -> new PropertiesFileFlagProvider(fileName));
         assertTrue(ex.getMessage().contains("Failed to load feature flags from not-exist.properties"));
+    }
+
+    @Test
+    void getBooleanEvaluation_flagWithoutPrefix_isIgnored() {
+        // GIVEN
+        PropertiesFileFlagProvider provider = new PropertiesFileFlagProvider("feature-accessor.properties");
+        EvaluationContext evaluationContext = Mockito.mock(EvaluationContext.class);
+        // WHEN
+        boolean result = provider.getBooleanEvaluation("not_feature_flag", false, evaluationContext).getValue();
+        // THEN
+        assertFalse(result);
     }
 }

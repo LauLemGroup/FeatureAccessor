@@ -1,5 +1,6 @@
 package com.laulem.featureaccessorcore.provider;
 
+import com.laulem.featureaccessorcore.exception.ProviderException;
 import com.laulem.featureaccessorcore.tool.EvaluationTool;
 import dev.openfeature.sdk.EvaluationContext;
 import dev.openfeature.sdk.FeatureProvider;
@@ -8,18 +9,36 @@ import dev.openfeature.sdk.ProviderEvaluation;
 import dev.openfeature.sdk.Value;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * InMemoryFlagProvider is a feature provider that stores feature flags in memory.
+ * It allows setting and retrieving flags dynamically at runtime.
+ */
 public class InMemoryFlagProvider implements FeatureProvider {
     private final Map<String, Value> flags = new ConcurrentHashMap<>();
 
-    public void setFlag(String key, boolean enabled) {
-        flags.put(key.toUpperCase(), new Value(enabled));
+    /**
+     * Sets a flag in memory with the specified key and value.
+     *
+     * @param key     the flag key
+     * @param enabled the flag value
+     * @param <T>     the type of the flag value. Should be one of Boolean, String, Integer, Double, Number, List, Structure or Value.
+     */
+    public <T> void setFlag(String key, T enabled) {
+        try {
+            Objects.requireNonNull(key, "Key cannot be null");
+            Objects.requireNonNull(enabled, "Enabled cannot be null");
+            flags.put(key.toUpperCase(), new Value(enabled));
+        } catch (InstantiationException e) {
+            throw new ProviderException("Erreur lors de l'instanciation du flag", e);
+        }
     }
 
     @Override
     public Metadata getMetadata() {
-        return () -> "PropertiesFileFeatureProvider";
+        return () -> "InMemoryFlagProvider";
     }
 
     @Override

@@ -3,13 +3,18 @@ package com.laulem.featureaccessorcore.tool;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 class EnvResolverTest {
     @Test
     void resolveEnvVars_returnsEnvValueIfPresent() {
+        // GIVEN
         String key = "PWD";
         String value = System.getenv(key);
-        assertEquals(value, EnvResolver.resolveEnvVars("${PWD}"));
+        // WHEN
+        String result = EnvResolver.resolveEnvVars("${PWD}");
+        // THEN
+        assertEquals(value, result);
     }
 
     @Test
@@ -28,5 +33,12 @@ class EnvResolverTest {
     void resolveEnvVars_returnsInputIfNoPattern() {
         assertEquals("no pattern", EnvResolver.resolveEnvVars("no pattern"));
     }
-}
 
+    @Test
+    void resolveEnvVars_returnsNullIfInputIsNull() {
+        // WHEN
+        String result = EnvResolver.resolveEnvVars(null);
+        // THEN
+        assertNull(result);
+    }
+}

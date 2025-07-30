@@ -14,25 +14,53 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 
+/**
+ * MultiFeatureProvider is a feature provider that aggregates multiple feature providers.
+ * It evaluates flags using the first successful provider and returns the result.
+ */
 public class MultiFeatureProvider implements FeatureProvider {
     private final List<FeatureProvider> providers = Collections.synchronizedList(new ArrayList<>());
 
     public MultiFeatureProvider() {
     }
 
+    /**
+     * Constructs a MultiFeatureProvider with a list of feature providers.
+     *
+     * @param providers the list of feature providers
+     */
     public MultiFeatureProvider(List<FeatureProvider> providers) {
         this.providers.addAll(providers);
     }
 
-    public MultiFeatureProvider(FeatureProvider provider) {
-        providers.add(provider);
+    /**
+     * Constructs a MultiFeatureProvider with a single feature provider.
+     *
+     * @param featureProvider the feature provider to add
+     */
+    public MultiFeatureProvider(FeatureProvider featureProvider) {
+        Objects.requireNonNull(featureProvider, "Feature provider cannot be null");
+        providers.add(featureProvider);
     }
 
+    /**
+     * Checks if the provider evaluation does not contain an error.
+     *
+     * @param x the provider evaluation
+     * @param <T> the type of the evaluation value
+     * @return true if there is no error code, false otherwise
+     */
     private static <T> boolean providerNotContainError(final ProviderEvaluation<T> x) {
         return x.getErrorCode() == null;
     }
 
+    /**
+     * Adds a feature provider to the list.
+     *
+     * @param featureProvider the feature provider to add
+     */
     public void addProvider(FeatureProvider featureProvider) {
+        Objects.requireNonNull(featureProvider, "Feature provider cannot be null");
         providers.add(featureProvider);
     }
 
@@ -41,6 +69,15 @@ public class MultiFeatureProvider implements FeatureProvider {
         return () -> "MultiFeatureProviderImpl";
     }
 
+    /**
+     * Evaluates a flag using all providers and returns the first successful evaluation.
+     *
+     * @param defaultValue the default value to return if no provider returns a value without error
+     * @param ctx the evaluation context (not used)
+     * @param extractor function to extract the ProviderEvaluation from a FeatureProvider
+     * @param <T> the type of the flag value
+     * @return the ProviderEvaluation result
+     */
     private <T> ProviderEvaluation<T> evaluateFlag(T defaultValue, EvaluationContext ctx, Function<FeatureProvider, ProviderEvaluation<T>> extractor) {
         try {
             Optional<ProviderEvaluation<T>> evaluation = providers.stream()
@@ -89,6 +126,11 @@ public class MultiFeatureProvider implements FeatureProvider {
         return evaluateFlag(defaultValue, ctx, x -> x.getObjectEvaluation(flagKey, defaultValue, ctx));
     }
 
+    /**
+     * Returns an unmodifiable list of feature providers.
+     *
+     * @return the list of feature providers
+     */
     public List<FeatureProvider> getProviders() {
         return Collections.unmodifiableList(providers);
     }
